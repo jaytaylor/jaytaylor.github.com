@@ -1,0 +1,21 @@
+---
+title: howto write robust bash scripts
+subtitle: A collection of technical research, findings, ideas and musings
+description: Postgresql slow deletes
+---
+
+{% extends "columns.j2" %}
+
+
+{% block main %}
+# Howto: Write robust shell scripts
+Bash shell scripting is powerful.  But because it doesn't check each command for a 0 exit status, it can be very messy and error prone.  When a command exits unhappily, it's up to you to notice.
+
+Use $?
+
+    someIffyCommand
+    rc=$?
+    test $rc -ne 0 && echo 'error: details...' 1>&2 && exit $rc
+
+{% endblock main %}
+
