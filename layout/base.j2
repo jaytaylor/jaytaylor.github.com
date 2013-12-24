@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     {% block starthead %}{% endblock starthead %}
-    <meta charset="{{ resource.meta.charset }}">
+    <meta charset="{{ site_charset }}">
     <title>{% block title %}{{ resource.meta.title }}{% endblock %} | {{ site_title }}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ resource.meta.description }}">
-    <meta name="author" content="{{ resource.meta.author }}">
+    <meta name="author" content="{{ author.name }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {# Le HTML5 shim, for IE6-8 support of HTML elements #}
+
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
     {% block basecss %}
-    <link href="{{ media_url('css/bootstrap.css') }}" rel="stylesheet">
-    <style type="text/css">
+
+    <link href="{{ media_url('css/bootstrap.css') }}" rel="stylesheet"/>
+    <link href="{{ media_url('css/font-awesome.min.css') }}" rel="stylesheet"/>
+    <link href="{{ media_url('css/bootswatch.css') }}" rel="stylesheet"/>
+    <link href="{{ media_url('css/site.css') }}" rel="stylesheet"/>
+
+    <!--<style type="text/css">
         body {
             padding-top: 60px;
             padding-bottom: 40px;
@@ -38,8 +44,7 @@
         footer {
             text-align: center;
         }
-    </style>
-    <link href="{{ media_url('css/bootstrap-responsive.css') }}" rel="stylesheet">
+    </style>-->
     {% endblock basecss %}
     {% block css %}{% endblock %}
 
@@ -48,44 +53,41 @@
     <link rel="shortcut icon" href="/favicon.ico">
     {% endblock favicons %}
     
-    {% block headjs %}
-    {% endblock headjs %}
+    {% block headjs %}{% endblock headjs %}
 
-    {% block endhead %}{% endblock endhead %}
     {% block analytics %}
     {% include "analytics.j2" %}
     {% endblock analytics %}
-  </head>
 
-  <body class="{{ resource.meta.id if resource.meta.id else resource.slug }}">
-
+    {% block endhead %}{% endblock endhead %}
+</head>
+<body class="{{ resource.meta.id if resource.meta.id else resource.slug }}">
     {% block body %}
-
     <div class="container" id="top">
-      {% block container %}
-
-      {% endblock container %}
-      <hr>
-      <footer>
-        {% block footer %}
-        <p>&copy; 2010-2013 <a href="{{ author.url }}">{{ author.name }}</a></p>
-        {% endblock footer %}
-      </footer>
+        {% block main %}{% endblock main %}
+        <hr/>
+        <footer>
+            {% block footer %}
+            <p>&copy; 2010-2013 <a href="{{ author.url }}">{{ author.name }}</a></p>
+            {% endblock footer %}
+        </footer>
     </div> <!-- /container -->
-
     {% endblock body %}
     
     {% block js %}
     {# Javascript at the bottom for fast page loading #}
     {% block jquery %}
     {# Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if necessary #}
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="{{ media_url('js/libs/jquery-1.10.1.min.js') }}">\x3C/script>')</script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{ media_url('js/libs/jquery-2.0.3.min.js') }}">\x3C/script>')</script>
     {% endblock jquery %}
 
     {% block bootstrap_scripts %}
+    <!--<script src="{{ media_url('js/libs/bootstrap.min.js') }}"></script>-->
     <script src="{{ media_url('js/libs/bootstrap.min.js') }}"></script>
+    <script src="{{ media_url('js/libs/bootswatch.js') }}"></script>
     {# Uncomment any of these lines to enable that plugin on your site #}
+      <script src="{{ media_url('js/libs/jquery.smooth-scroll.min.js') }}"></script>
 {#    <script src="{{ media_url('js/libs/bootstrap-alerts.js') }}"></script>#}
 {#    <script src="{{ media_url('js/libs/bootstrap-buttons.js') }}"></script>#}
 {#    <script src="{{ media_url('js/libs/bootstrap-dropdown.js') }}"></script>#}
@@ -98,14 +100,6 @@
 
     {% block scripts %}
     {% endblock scripts %}
-
-
-    <!--[if lt IE 7 ]>
-      <script src="{{ media_url('js/libs/dd_belatedpng.js') }}"></script>
-      <script>DD_belatedPNG.fix('img, .png_bg'); // Fix any <img> or .png_bg bg-images. Also, please read goo.gl/mZiyb </script>
-    <![endif]-->
-
-
 
     {% endblock js %}
   </body>

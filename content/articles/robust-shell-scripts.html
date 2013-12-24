@@ -1,0 +1,35 @@
+---
+title: howto write robust bash scripts
+subtitle: A collection of technical research, findings, ideas and musings
+description: >
+    A collection of technical research, findings, ideas and musings related to BASH shell scripting.
+created: !!timestamp '2013-10-01 10:00:00'
+tags:
+    - programming
+    - bash
+    - shell-scripting
+---
+
+{% mark image -%}
+
+![Forkbomb]([[!!/images/bash-forkbomb.png]])
+
+{%- endmark %}
+
+{% mark excerpt -%}
+
+Notes about writing robust BASH shell scripts.
+
+{%- endmark %}
+
+
+# Howto: Write robust shell scripts
+Shell scripting is powerful.  But because it doesn't check each command for
+a 0 exit status, it can be very messy and error prone.  When a command exits unhappily, it's up to you to notice.
+
+Use $?
+
+    someIffyCommand
+    rc=$?
+    test $rc -ne 0 && echo 'error: details...' 1>&2 && exit $rc
+

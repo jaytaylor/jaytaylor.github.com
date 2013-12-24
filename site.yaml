@@ -1,24 +1,54 @@
 mode: development # Use "hyde publish -c prod.yaml to have this automatically switch to production
 media_root: media # Relative path from content folder.
 media_url: /media # URL where the media files are served from.
+base_url: /
 plugins:
     - hyde.ext.plugins.meta.MetaPlugin
-    - hyde.ext.plugins.auto_extend.AutoExtendPlugin
-    - hyde.ext.plugins.syntext.SyntextPlugin
-    - hyde.ext.plugins.textlinks.TextlinksPlugin
+    - hyde.ext.plugins.meta.AutoExtendPlugin
+    - hyde.ext.plugins.meta.SorterPlugin
+    - hyde.ext.plugins.meta.GrouperPlugin
+    - hyde.ext.plugins.meta.TaggerPlugin
+    - hyde.ext.plugins.text.SyntextPlugin
+    - hyde.ext.plugins.text.TextlinksPlugin
+markdown:
+    extensions:
+        - def_list
+        - tables
+        - headerid
 context:
     data:
-        site_title: Jay Taylor
+        site_charset: utf-8
+        site_title: Jay Taylor's website
         author:
             name: Jay Taylor
             url: "http://jaytaylor.com"
         google_analytics_id: UA-XXXXX-YY
         home_url: index.html
         menu:
-            - title: Home
-              url: index.html
-            - title: Landing
-              url: landing.html
+            -
+                name: Home
+                description: Home Page
+                css_class: home
+                type: page
+                url: index.html
+            -
+                name: Portfolio
+                description: Portfolio
+                css_class: portfolio
+                type: node
+                url: portfolio
+            -
+                name: Articles
+                description: Articles
+                css_class: article
+                type: node
+                url: articles
+            -
+                name: About
+                description: About
+                css_class: about
+                type: page
+                url: about.html
         sidebar:
             - title: One
               url: one.html
@@ -26,4 +56,32 @@ context:
               url: \#
             - title: robust-shell-scripts
               url: robust-shell-scripts.html
-
+meta:
+    nodemeta: meta.yaml
+    created: !!timestamp 2010-01-01 00:00:00
+    author: Jay Taylor
+sorter:
+    time:
+        attr:
+            - meta.created
+        reverse: true
+        filters:
+            source.kind: html
+            meta.listable: true
+tagger:
+    sorter: time
+    archives:
+        articles:
+            source: articles
+            target: articles/tags
+            template: tagged_posts.j2
+            archive_extension: html
+            meta:
+                listable: false
+#        blog:
+#            source: blog
+#            target: blog/tags
+#            template: tagged_posts.j2
+#            archive_extension: html
+#            meta:
+#                listable: false

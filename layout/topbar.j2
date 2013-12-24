@@ -3,21 +3,52 @@
 {% extends "base.j2" %}
 
 
-
 {% block body %}
-<div class="navbar navbar-inverse navbar-fixed-top">
-  {% block topbar %}
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="brand" href="{{ home_url }}">{{ site_title }}</a>
-      <div class="nav-collapse collapse">
+{% block topbar %}
+    <!--<div class="nav-collapse collapse">
         {% from "macros.j2" import render_main_menu with context %}
         {{ render_main_menu() }}
-      </div>
-    </div>
-  </div>
-  {% endblock topbar %}
-</div>
+    </div>-->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse"></button>
+            <a class="navbar-brand" href="#">{{ site_title }}</a>
+        </div>
+        <div class="navbar-collapse collapse navbar-inverse-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/articles">Articles</a></li>
+                <li><a href="/clippings">Clippings</a></li>
+                <!--<li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li class="dropdown-header">Dropdown header</li>
+                        <li><a href="#">Separated link</a></li>
+                        <li><a href="#">One more separated link</a></li>
+                    </ul>
+                </li>-->
+            </ul>
+            <form class="navbar-form navbar-right">
+                <input type="text" class="form-control col-lg-8"
+                placeholder="Search">
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Link</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.nav-collapse -->
+    </div><!-- /.navbar -->
+{% endblock topbar %}
 
 {{ super() }} {# Use this to include the rest of the body block as it was originally defined #}
 
