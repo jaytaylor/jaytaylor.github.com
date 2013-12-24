@@ -1,11 +1,10 @@
-{# Adds in the topbar #}
+{# Adds in the top navigation menu bar. #}
 
 {% extends "base.j2" %}
 
 {% block body %}
-    {% from "macros.j2" import render_topbar with context %}
+    {% from "macros.j2" import render_main_menu with context %}
     {{ render_main_menu() }}
-    {% block topbar %}{% endblock topbar %}
     {{ super() }} {# Use this to include the rest of the body block as it was originally defined #}
 {% endblock body %}
 

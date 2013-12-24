@@ -1,33 +1,128 @@
+{% macro render_main_menu(class=None) -%}
+      {#<div class="bs-docs-section clearfix">#}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="navbar navbar-inverse">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Jay Taylor</a>
+            </div>
+            <div class="navbar-collapse collapse navbar-inverse-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/articles">Articles</a></li>
+                    <li><a href="/clippings">Link</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">Dropdown header</li>
+                            <li><a href="#">Separated link</a></li>
+                            <li><a href="#">One more separated link</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <form class="navbar-form navbar-left">
+                    <input type="text" class="form-control col-lg-8" placeholder="Search">
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">Link</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.nav-collapse -->
+        </div><!-- /.navbar -->
+    </div>
+</div>
+      {#</div>#}
+
+    {#<div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse"></button>
+            <a class="navbar-brand" href="#">{{ site_title }}</a>
+        </div>
+        <div class="navbar-collapse collapse navbar-inverse-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/articles">Articles</a></li>
+                <li><a href="/clippings">Clippings</a></li>
+                {#<!--<li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li class="dropdown-header">Dropdown header</li>
+                        <li><a href="#">Separated link</a></li>
+                        <li><a href="#">One more separated link</a></li>
+                    </ul>
+                </li>--> # }
+            </ul>
+            <form class="navbar-form navbar-right">
+                <input type="text" class="form-control col-lg-8"
+                placeholder="Search">
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Link</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>#}
+{%- endmacro %}
+
+
 {% macro render_excerpt(res, class=None) %}
-{% refer to res.relative_path as article %}
-<article {{'class='~class if class }}>
-    <a href="{{ content_url(res.url) }}">{{ article.image|markdown|typogrify }}</a>
-    <h3><a href="{{ content_url(res.url) }}">{{ res.meta.title }}</a></h3>
-    {{ article.excerpt|markdown|typogrify }}
-    <time datetime="{{ res.meta.created.strftime('%Y-%m-%d') }}">Published: {{ res.meta.created.strftime('%a, %d %b %Y') }}</time>
-</article>
+    {% refer to res.relative_path as article %}
+    <article {{'class='~class if class }}>
+        <a href="{{ content_url(res.url) }}">{{ article.image|markdown|typogrify }}</a>
+        <h3><a href="{{ content_url(res.url) }}">{{ res.meta.title }}</a></h3>
+        {{ article.excerpt|markdown|typogrify }}
+        <time datetime="{{ res.meta.created.strftime('%Y-%m-%d') }}">Published: {{ res.meta.created.strftime('%a, %d %b %Y') }}</time>
+    </article>
 {% endmacro %}
 
+
 {% macro render_nav(menu, cls=None) -%}
-{% if menu -%}
-<nav {{'class='~cls if cls }}>
-    <ul>
-    {% for item in menu -%}
-        {% set active = False -%}
-        {% if item.type == 'page' -%}
-            {% set active = (resource.url == site.content.resource_from_relative_path(item.url).url) -%}
-        {% else -%}
-            {% set active = (node == site.content.node_from_relative_path(item.url)) -%}
-        {%- endif %}
-        {% set classes = ['button', 'white'] -%}
-        {% do classes.append('active') if active -%}
-        {% do classes.append(item.css_class) if item.css_class -%}
-        <li>
-            <a title="{{ item.description }}" class="{{ classes|join(' ') }}" href="{{ content_url(item.url) }}">{{ item.name }}</a>
-        </li>
-    {%- endfor %}
-    </ul>
-</nav>
-{%- endif %}
+    {% if menu -%}
+    <nav {{'class='~cls if cls }}>
+        <ul>
+        {% for item in menu -%}
+            {% set active = False -%}
+            {% if item.type == 'page' -%}
+                {% set active = (resource.url == site.content.resource_from_relative_path(item.url).url) -%}
+            {% else -%}
+                {% set active = (node == site.content.node_from_relative_path(item.url)) -%}
+            {%- endif %}
+            {% set classes = ['button', 'white'] -%}
+            {% do classes.append('active') if active -%}
+            {% do classes.append(item.css_class) if item.css_class -%}
+            <li>
+                <a title="{{ item.description }}" class="{{ classes|join(' ') }}" href="{{ content_url(item.url) }}">{{ item.name }}</a>
+            </li>
+        {%- endfor %}
+        </ul>
+    </nav>
+    {%- endif %}
 {%- endmacro %}
 
