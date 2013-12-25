@@ -2,19 +2,26 @@
 
 {% block main -%}
 <article class="post">
-    <nav class="post_nav">
-        <a class="backlink" href="{{ content_url(resource.node.url) }}">Back to list</a>
-        <a class="prev{{' disabled' if not resource.prev_by_time }}"
-            title="{{ resource.prev_by_time.meta.title }}"
-            {% if resource.prev_by_time %} href="{{ content_url(resource.prev_by_time.url) }}"{% endif %}>
-            Previous
-        </a>
+    <nav class="post-nav">
+        <div class="nav-lhs">
+            <a class="prev{{' disabled' if not resource.prev_by_time }}"
+                title="{{ resource.prev_by_time.meta.title }}"
+                {% if resource.prev_by_time %} href="{{ content_url(resource.prev_by_time.url) }}"{% endif %}>
+                &larr; Previous: <em>{{ resource.prev_by_time.meta.title }}</em>
+            </a>
+        </div>
 
-        <a class="next{{' disabled' if not resource.next_by_time }}"
-            title="{{ resource.next_by_time.meta.title }}"
-            {% if resource.next_by_time %} href="{{ content_url(resource.next_by_time.url) }}"{% endif %}>
-            Next: <i>{{ resource.next_by_time.meta.title }}</i>
-        </a>
+        <div class="nav-mid">
+            <a class="backlink" href="{{ content_url(resource.node.url) }}">&uarr; Listing index</a>
+        </div>
+
+        <div class="nav-rhs">
+            <a class="next{{' disabled' if not resource.next_by_time }}"
+                title="{{ resource.next_by_time.meta.title }}"
+                {% if resource.next_by_time %} href="{{ content_url(resource.next_by_time.url) }}"{% endif %}>
+                &rarr; Next: <em>{{ resource.next_by_time.meta.title }}</em>
+            </a>
+        </div>
 
         {#<br/>
         <div id="twitter_share">
@@ -30,23 +37,23 @@
             </iframe>
         </div>#}
     </nav>
+    <div class="clearfix"></div>
 
     <h1 class="title">
-        <a href="{{ content_url(resource.url) }}">{{ resource.meta.title }}</a>
+        {#<a href="{{ content_url(resource.url) }}">{{ resource.meta.title }}</a>#}{{ resource.meta.title }}
     </h1>
 
-    {% if resource.meta.tags %}
-    <ul class="tags clear">
-    {% for tag in resource.meta.tags %}
-        <li>
-            <a class="small" href="{{ content_url('articles/tags/'~tag~'.html') }}">{{ tag }}</a>
-        </li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-    <time datetime="{{ resource.meta.created.strftime('%Y-%m-%d') }}">
-        published: {{ resource.meta.created.strftime('%a, %d %b %Y') }}
-    </time>
+    <p class="article-details">
+        by <a class="author" href="/">{{ resource.meta.author }}</a>
+        <time datetime="{{ resource.meta.created.strftime('%Y-%m-%d') }}">{{ resource.meta.created.strftime('%B %d, %Y') }}</time>
+
+        {% if resource.meta.tags %}
+        <br/>
+        Published in
+        {#{{ resource.meta.tags|join(", ") }}#}
+        {% for tag in resource.meta.tags %}{% if leadingComma -%}, {% else %} {%- endif %}<a href="{{ content_url('/articles/tags/'~tag~'.html') }}">{{ tag }}</a>{% set leadingComma = True -%}{% endfor %}
+        {% endif %}
+    </p>
     {% filter markdown|typogrify -%}
     {% mark post -%}
     {% block post -%}{%- endblock %}
