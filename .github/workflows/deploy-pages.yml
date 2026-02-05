@@ -1,0 +1,100 @@
+name: deploy-pages
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "content/**"
+      - "layout/**"
+      - "site.yaml"
+      - "prod.yaml"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build site
+        run: |
+          set -euo pipefail
+          rm -rf deploy
+          cat <<'SCRIPT' > /tmp/hyde-build-inner.sh
+          #!/usr/bin/env bash
+          set -euo pipefail
+
+          pip install --upgrade pip==20.3.4 setuptools==44.1.1 wheel==0.37.1 >/dev/null
+
+          install_from_sdist() {
+            local name="$1"
+            local version="$2"
+            local url="https://files.pythonhosted.org/packages/source/${name:0:1}/${name}/${name}-${version}.tar.gz"
+            local tarball="/tmp/${name}-${version}.tar.gz"
+            local dir="/tmp/${name}-${version}"
+
+            python - <<PY
+import ssl
+import urllib2
+
+url = "${url}"
+dest = "${tarball}"
+context = ssl._create_unverified_context()
+response = urllib2.urlopen(url, context=context)
+with open(dest, "wb") as handle:
+    handle.write(response.read())
+PY
+
+            rm -rf "$dir"
+            tar -xzf "$tarball" -C /tmp
+            if [ -f "$dir/setup.py" ] && grep -q "distribute_setup" "$dir/setup.py"; then
+              sed -i '/distribute_setup/d' "$dir/setup.py"
+              sed -i '/use_setuptools()/d' "$dir/setup.py"
+            fi
+            pip install --no-deps "$dir" >/dev/null
+          }
+
+          install_from_sdist fs 0.4.0
+          install_from_sdist fswrap 0.1.2
+          install_from_sdist commando 0.3.4
+          install_from_sdist PyYAML 3.10
+          install_from_sdist Markdown 2.3.1
+          install_from_sdist MarkupSafe 0.18
+          install_from_sdist Pygments 1.6
+          install_from_sdist typogrify 2.0.0
+          install_from_sdist smartypants 1.7.1
+          install_from_sdist Jinja2 2.7.1
+          install_from_sdist hyde 0.8.8
+
+          hyde gen -c prod.yaml
+          SCRIPT
+          chmod +x /tmp/hyde-build-inner.sh
+          docker run --rm \
+            -v "$PWD:/repo" \
+            -v /tmp/hyde-build-inner.sh:/tmp/hyde-build-inner.sh:ro \
+            -w /repo \
+            python:2.7 \
+            bash -lc "/tmp/hyde-build-inner.sh"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: deploy
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
