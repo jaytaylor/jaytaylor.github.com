@@ -10,7 +10,7 @@ on:
       - "site.yaml"
       - "prod.yaml"
       - ".github/workflows/deploy-pages.yml"
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 concurrency:
   group: pages-${{ github.ref }}
