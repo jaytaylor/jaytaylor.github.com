@@ -1,6 +1,6 @@
 name: deploy-pages
 
-on:
+"on":
   push:
     branches:
       - master
